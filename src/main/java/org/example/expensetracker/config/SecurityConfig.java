@@ -1,6 +1,8 @@
 package org.example.expensetracker.config;
 
 import org.example.expensetracker.security.CustomUserDetailsService;
+import org.example.expensetracker.security.JwtAuthenticationFilter;
+import org.example.expensetracker.service.auth.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,11 +14,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwtService, CustomUserDetailsService customUserDetailsService) throws Exception{
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
@@ -35,6 +38,17 @@ public class SecurityConfig {
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 );
+        http
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtService, customUserDetailsService),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint((req, resp, e) -> {
+                            resp.setContentType("application/json");
+                            resp.setStatus(401);
+                            resp.getWriter().write("{\"status\":401,\"message\":\"Authentication required\"}");
+                        }));
         return http.build();
     }
 
