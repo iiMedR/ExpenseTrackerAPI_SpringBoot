@@ -2,6 +2,7 @@ package org.example.expensetracker.service;
 
 import org.example.expensetracker.dto.category.CategoryResponse;
 import org.example.expensetracker.dto.category.CreateCategoryRequest;
+import org.example.expensetracker.exception.CategoryAlreadyExistexception;
 import org.example.expensetracker.model.Category;
 import org.example.expensetracker.model.User;
 import org.example.expensetracker.repository.CategoryRepository;
@@ -28,6 +29,9 @@ public class CategoryService {
 
     public CategoryResponse createCategory(CreateCategoryRequest request) {
         User user = userService.getCurrentUser();
+        if(categoryRepository.existsByNameIgnoreCaseAndUserId(request.name(),  user.getId())) {
+            throw new CategoryAlreadyExistexception(request.name());
+        }
         Category category = new Category();
         category.setName(request.name());
         category.setUser(user);
