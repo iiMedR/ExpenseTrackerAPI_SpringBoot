@@ -11,6 +11,7 @@ import org.example.expensetracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ExpenseService {
@@ -40,5 +41,11 @@ public class ExpenseService {
 
         expenseRepository.save(expense);
         return toResponse(expense);
+    }
+
+    public List<ExpenseResponse> findAllExpenses() {
+        User user =  userService.getCurrentUser();
+        List<Expense> expenses = expenseRepository.findAllExpensesByUserId(user.getId());
+        return expenses.stream().map(this::toResponse).toList();
     }
 }
