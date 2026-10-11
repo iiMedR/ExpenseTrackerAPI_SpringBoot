@@ -18,8 +18,8 @@ public interface ExpenseRepository extends JpaRepository<Expense,Long> {
             where e.user.id = :userId
             and (:categoryId is NULL or e.category.id = :categoryId)
             and (:minAmount is Null or e.amount >= :minAmount)
-            and (:startDate is null or e.date >= :startDate)
-            and (:endDate is null or e.date <= :endDate)
+            and (cast(:startDate as LocalDate) is null or e.date >= :startDate)
+            and (cast(:endDate as LocalDate) is null or e.date <= :endDate)
 """)
     List<Expense> findAllExpensesByUserId(
             @Param("userId") Long userId,
