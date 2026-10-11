@@ -10,6 +10,7 @@ import org.example.expensetracker.repository.CategoryRepository;
 import org.example.expensetracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -43,9 +44,9 @@ public class ExpenseService {
         return toResponse(expense);
     }
 
-    public List<ExpenseResponse> findAllExpenses() {
+    public List<ExpenseResponse> findAllExpenses(Long categoryId, LocalDate startDate, LocalDate endDate, BigDecimal minAmount) {
         User user =  userService.getCurrentUser();
-        List<Expense> expenses = expenseRepository.findAllExpensesByUserId(user.getId());
+        List<Expense> expenses = expenseRepository.findAllExpensesByUserId(user.getId(), categoryId, startDate, endDate, minAmount);
         return expenses.stream().map(this::toResponse).toList();
     }
 }
