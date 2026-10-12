@@ -2,6 +2,7 @@ package org.example.expensetracker.controller;
 
 import jakarta.validation.Valid;
 import org.example.expensetracker.dto.expense.CreateExpenseRequest;
+import org.example.expensetracker.dto.expense.UpdateExpenseRequest;
 import org.example.expensetracker.dto.expense.ExpenseResponse;
 import org.example.expensetracker.dto.expense.TotalExpensesResponse;
 import org.example.expensetracker.model.Expense;
@@ -44,6 +45,13 @@ public class ExpenseController {
     @GetMapping("/{id}")
     public ResponseEntity<ExpenseResponse> findExpenseById(@PathVariable Long id) {
         return ResponseEntity.ok(expenseService.findExpenseById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ExpenseResponse> updateExpense(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateExpenseRequest request) {
+        return ResponseEntity.ok(expenseService.updateExpense(id, request));
     }
 
 

@@ -1,6 +1,7 @@
 package org.example.expensetracker.service;
 
 import org.example.expensetracker.dto.expense.CreateExpenseRequest;
+import org.example.expensetracker.dto.expense.UpdateExpenseRequest;
 import org.example.expensetracker.dto.expense.ExpenseResponse;
 import org.example.expensetracker.dto.expense.TotalExpensesResponse;
 import org.example.expensetracker.exception.CategoryNotFoundException;
@@ -49,6 +50,21 @@ public class ExpenseService {
     public ExpenseResponse findExpenseById(Long id) {
         User user = userService.getCurrentUser();
         return toResponse(expenseRepository.findExpenseByIdAndUserId(id, user.getId()).orElseThrow(() -> new ExpenseNotFoundException(id)));
+    }
+
+    public ExpenseResponse updateExpense(Long id, UpdateExpenseRequest request) {
+        User user = userService.getCurrentUser();
+        Expense expense = expenseRepository.findExpenseByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new ExpenseNotFoundException(id));
+        Category category = categoryRepository.findByIdAndUserId(request.categoryId(), user.getId())
+                .orElseThrow(() -> new CategoryNotFoundException(request.categoryId()));
+
+        expense.setTitle(request.title());
+        expense.setAmount(request.amount());
+        expense.setDate(request.date());
+        expense.setCategory(category);
+
+        return toResponse(expenseRepository.save(expense));
     }
 
     public List<ExpenseResponse> findAllExpenses(Long categoryId, LocalDate startDate, LocalDate endDate, BigDecimal minAmount) {
