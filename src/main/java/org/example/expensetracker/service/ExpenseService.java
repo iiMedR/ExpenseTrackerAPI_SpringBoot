@@ -67,6 +67,13 @@ public class ExpenseService {
         return toResponse(expenseRepository.save(expense));
     }
 
+    public void deleteExpense(Long id) {
+        User user = userService.getCurrentUser();
+        Expense expense = expenseRepository.findExpenseByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new ExpenseNotFoundException(id));
+        expenseRepository.delete(expense);
+    }
+
     public List<ExpenseResponse> findAllExpenses(Long categoryId, LocalDate startDate, LocalDate endDate, BigDecimal minAmount) {
         User user =  userService.getCurrentUser();
         List<Expense> expenses = expenseRepository.findAllExpensesByUserId(user.getId(), categoryId, startDate, endDate, minAmount);
