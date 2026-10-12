@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.example.expensetracker.dto.expense.CreateExpenseRequest;
 import org.example.expensetracker.dto.expense.ExpenseResponse;
 import org.example.expensetracker.dto.expense.TotalExpensesResponse;
+import org.example.expensetracker.model.Expense;
 import org.example.expensetracker.service.ExpenseService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,11 @@ public class ExpenseController {
     @GetMapping("/total")
     public ResponseEntity<TotalExpensesResponse> findAllTotalExpenses(@RequestParam(required = false) Long categoryId) {
         return ResponseEntity.ok(expenseService.findTotalExpenses(categoryId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ExpenseResponse> findExpenseById(@PathVariable Long id) {
+        return ResponseEntity.ok(expenseService.findExpenseById(id));
     }
 
 

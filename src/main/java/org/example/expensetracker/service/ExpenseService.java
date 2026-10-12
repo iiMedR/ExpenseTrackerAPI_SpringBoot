@@ -4,6 +4,7 @@ import org.example.expensetracker.dto.expense.CreateExpenseRequest;
 import org.example.expensetracker.dto.expense.ExpenseResponse;
 import org.example.expensetracker.dto.expense.TotalExpensesResponse;
 import org.example.expensetracker.exception.CategoryNotFoundException;
+import org.example.expensetracker.exception.ExpenseNotFoundException;
 import org.example.expensetracker.model.Category;
 import org.example.expensetracker.model.Expense;
 import org.example.expensetracker.model.User;
@@ -43,6 +44,11 @@ public class ExpenseService {
 
         expenseRepository.save(expense);
         return toResponse(expense);
+    }
+
+    public ExpenseResponse findExpenseById(Long id) {
+        User user = userService.getCurrentUser();
+        return toResponse(expenseRepository.findExpenseByIdAndUserId(id, user.getId()).orElseThrow(() -> new ExpenseNotFoundException(id)));
     }
 
     public List<ExpenseResponse> findAllExpenses(Long categoryId, LocalDate startDate, LocalDate endDate, BigDecimal minAmount) {

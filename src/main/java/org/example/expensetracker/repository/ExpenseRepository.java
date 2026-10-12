@@ -1,5 +1,6 @@
 package org.example.expensetracker.repository;
 
+import org.example.expensetracker.dto.expense.ExpenseResponse;
 import org.example.expensetracker.model.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense,Long> {
@@ -39,4 +41,6 @@ public interface ExpenseRepository extends JpaRepository<Expense,Long> {
             @Param("userId") Long userId,
             @Param("categoryId") Long categoryId
     );
+
+    Optional<Expense> findExpenseByIdAndUserId(Long id, Long userId);
 }
