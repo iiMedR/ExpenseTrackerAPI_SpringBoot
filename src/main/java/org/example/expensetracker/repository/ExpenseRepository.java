@@ -28,4 +28,15 @@ public interface ExpenseRepository extends JpaRepository<Expense,Long> {
             @Param("endDate") LocalDate endDate,
             @Param("minAmount") BigDecimal minAmount
             );
+
+    @Query("""
+            select coalesce(SUM(e.amount), 0)
+            from Expense e
+            where e.user.id = :userId
+            and (:categoryId is NULL or e.category.id = :categoryId)
+""")
+    BigDecimal findTotalExpensesByUserId(
+            @Param("userId") Long userId,
+            @Param("categoryId") Long categoryId
+    );
 }

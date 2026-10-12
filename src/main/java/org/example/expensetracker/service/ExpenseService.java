@@ -2,6 +2,7 @@ package org.example.expensetracker.service;
 
 import org.example.expensetracker.dto.expense.CreateExpenseRequest;
 import org.example.expensetracker.dto.expense.ExpenseResponse;
+import org.example.expensetracker.dto.expense.TotalExpensesResponse;
 import org.example.expensetracker.exception.CategoryNotFoundException;
 import org.example.expensetracker.model.Category;
 import org.example.expensetracker.model.Expense;
@@ -48,5 +49,11 @@ public class ExpenseService {
         User user =  userService.getCurrentUser();
         List<Expense> expenses = expenseRepository.findAllExpensesByUserId(user.getId(), categoryId, startDate, endDate, minAmount);
         return expenses.stream().map(this::toResponse).toList();
+    }
+
+    public TotalExpensesResponse findTotalExpenses(Long categoryId){
+        User user = userService.getCurrentUser();
+        BigDecimal totalExpenses = expenseRepository.findTotalExpensesByUserId(user.getId(), categoryId);
+        return new TotalExpensesResponse(totalExpenses);
     }
 }

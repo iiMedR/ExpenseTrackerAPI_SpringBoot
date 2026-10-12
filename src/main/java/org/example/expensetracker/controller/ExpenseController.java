@@ -3,6 +3,7 @@ package org.example.expensetracker.controller;
 import jakarta.validation.Valid;
 import org.example.expensetracker.dto.expense.CreateExpenseRequest;
 import org.example.expensetracker.dto.expense.ExpenseResponse;
+import org.example.expensetracker.dto.expense.TotalExpensesResponse;
 import org.example.expensetracker.service.ExpenseService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,11 @@ public class ExpenseController {
     public ResponseEntity<List<ExpenseResponse>> findAllExpenses(@RequestParam(required = false) Long categoryId, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate, @RequestParam(required = false) BigDecimal minAmount) {
         List<ExpenseResponse> expenses = expenseService.findAllExpenses(categoryId, startDate, endDate, minAmount);
         return ResponseEntity.ok(expenses);
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<TotalExpensesResponse> findAllTotalExpenses(@RequestParam(required = false) Long categoryId) {
+        return ResponseEntity.ok(expenseService.findTotalExpenses(categoryId));
     }
 
 
